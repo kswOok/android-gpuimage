@@ -41,7 +41,7 @@ import java.util.Queue;
 import static jp.co.cyberagent.android.gpuimage.util.TextureRotationUtil.TEXTURE_NO_ROTATION;
 
 @TargetApi(11)
-public class GPUImageRenderer implements Renderer, PreviewCallback {
+public class GPUImageRenderer implements GLTextureView.Renderer, PreviewCallback {
     public static final int NO_IMAGE = -1;
     static final float CUBE[] = {
             -1.0f, -1.0f,
@@ -113,6 +113,10 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
         }
     }
 
+    @Override
+    public void onSurfaceDestroyed(GL10 gl) {
+
+    }
     @Override
     public void onDrawFrame(final GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);

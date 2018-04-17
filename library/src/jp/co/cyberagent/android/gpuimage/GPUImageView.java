@@ -40,7 +40,7 @@ import java.util.concurrent.Semaphore;
 
 public class GPUImageView extends FrameLayout {
 
-    private GLSurfaceView mGLSurfaceView;
+    private GLTextureView mGLTextureView;
     private GPUImage mGPUImage;
     private GPUImageFilter mFilter;
     public Size mForceSize = null;
@@ -57,10 +57,11 @@ public class GPUImageView extends FrameLayout {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        mGLSurfaceView = new GPUImageGLSurfaceView(context, attrs);
-        addView(mGLSurfaceView);
+        mGLTextureView = new GPUImageTextureView(context, attrs);
+        mGLTextureView.setOpaque(false);
+        addView(mGLTextureView);
         mGPUImage = new GPUImage(getContext());
-        mGPUImage.setGLSurfaceView(mGLSurfaceView);
+        mGPUImage.setGLTextureView(mGLTextureView);
     }
 
     @Override
@@ -110,7 +111,7 @@ public class GPUImageView extends FrameLayout {
     // TODO Should be an xml attribute. But then GPUImage can not be distributed as .jar anymore.
     public void setRatio(float ratio) {
         mRatio = ratio;
-        mGLSurfaceView.requestLayout();
+        mGLTextureView.requestLayout();
         mGPUImage.deleteImage();
     }
 
@@ -181,7 +182,7 @@ public class GPUImageView extends FrameLayout {
     }
 
     public void requestRender() {
-        mGLSurfaceView.requestRender();
+        mGLTextureView.requestRender();
     }
 
     /**
@@ -255,7 +256,7 @@ public class GPUImageView extends FrameLayout {
                 // Show loading
                 addView(new LoadingView(getContext()));
 
-                mGLSurfaceView.requestLayout();
+                mGLTextureView.requestLayout();
             }
         });
         waiter.acquire();
@@ -276,7 +277,7 @@ public class GPUImageView extends FrameLayout {
         post(new Runnable() {
             @Override
             public void run() {
-                mGLSurfaceView.requestLayout();
+                mGLTextureView.requestLayout();
             }
         });
         requestRender();
@@ -300,8 +301,8 @@ public class GPUImageView extends FrameLayout {
     public Bitmap capture() throws InterruptedException {
         final Semaphore waiter = new Semaphore(0);
 
-        final int width = mGLSurfaceView.getMeasuredWidth();
-        final int height = mGLSurfaceView.getMeasuredHeight();
+        final int width = mGLTextureView.getMeasuredWidth();
+        final int height = mGLTextureView.getMeasuredHeight();
 
         // Take picture on OpenGL thread
         final int[] pixelMirroredArray = new int[width * height];
@@ -333,14 +334,14 @@ public class GPUImageView extends FrameLayout {
      * Pauses the GLSurfaceView.
      */
     public void onPause() {
-        mGLSurfaceView.onPause();
+        mGLTextureView.onPause();
     }
 
     /**
      * Resumes the GLSurfaceView.
      */
     public void onResume() {
-        mGLSurfaceView.onResume();
+        mGLTextureView.onResume();
     }
 
     public static class Size {
@@ -353,12 +354,12 @@ public class GPUImageView extends FrameLayout {
         }
     }
 
-    private class GPUImageGLSurfaceView extends GLSurfaceView {
-        public GPUImageGLSurfaceView(Context context) {
+    private class GPUImageTextureView extends GLTextureView {
+        public GPUImageTextureView(Context context) {
             super(context);
         }
 
-        public GPUImageGLSurfaceView(Context context, AttributeSet attrs) {
+        public GPUImageTextureView(Context context, AttributeSet attrs) {
             super(context, attrs);
         }
 

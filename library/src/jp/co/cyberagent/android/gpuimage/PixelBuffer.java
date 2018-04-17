@@ -39,7 +39,7 @@ public class PixelBuffer {
     final static String TAG = "PixelBuffer";
     final static boolean LIST_CONFIGS = false;
 
-    GLSurfaceView.Renderer mRenderer; // borrow this interface
+    GLTextureView.Renderer mRenderer; // borrow this interface
     int mWidth, mHeight;
     Bitmap mBitmap;
 
@@ -89,7 +89,7 @@ public class PixelBuffer {
         mThreadOwner = Thread.currentThread().getName();
     }
 
-    public void setRenderer(final GLSurfaceView.Renderer renderer) {
+    public void setRenderer(final GLTextureView.Renderer renderer) {
         mRenderer = renderer;
 
         // Does this thread own the OpenGL context?
@@ -202,7 +202,7 @@ public class PixelBuffer {
                 iat[(mHeight - i - 1) * mWidth + j] = ia[i * mWidth + j];
             }
         }
-        
+
 
         mBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
         mBitmap.copyPixelsFromBuffer(IntBuffer.wrap(iat));
